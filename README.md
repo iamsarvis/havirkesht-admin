@@ -56,14 +56,15 @@ Route Guard برای محافظت از مسیرها
 
 تمام صفحات مدیریتی درون یک Layout مشترک نمایش داده می‌شوند و تنها کاربران احراز هویت‌شده امکان دسترسی به آن‌ها را دارند.
 
-ساختار کلی :
-src/
-├── api/            # لایه ارتباط با API
-├── pages/          # صفحات (Login، Dashboard، Province)
-├── routes/         # Route Guard و Routing
-├── components/     # Layout، Header، Sidebar
-└── utils/          # utils
-
+ساختار کلی 
+<pre dir="ltr">
+</br>src/</br>
+├── api/            # لایه ارتباط با API </br>
+├── pages/          # صفحات (Login، Dashboard، Province)</br>
+├── routes/         # Route Guard و Routing</br>
+├── components/     # Layout، Header، Sidebar</br>
+└── utils/          # utils</br>
+</pre>
 <h2>۵. پیاده‌سازی احراز هویت کاربران</h2>
 
 برای ورود کاربران به سامانه، یک صفحه ورود طراحی شده است که شامل فرم نام کاربری و رمز عبور می‌باشد. مدیریت فرم ورود با استفاده از Formik انجام شده و اعتبارسنجی فیلدها توسط Yup صورت گرفته است.
