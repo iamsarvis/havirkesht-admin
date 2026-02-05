@@ -31,7 +31,7 @@ function Login() {
           <div className="mx-auto mb-4 w-16 h-16 rounded-full
             bg-linear-to-br from-emerald-500 to-teal-500
             flex items-center justify-center text-white text-2xl font-bold shadow-lg">
-            H
+            S
           </div>
 
           <h1 className="text-2xl font-extrabold text-slate-800">
