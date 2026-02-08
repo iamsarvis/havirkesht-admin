@@ -60,12 +60,10 @@ function Sidebar() {
         {baseDataOpen && (
           <div className="mr-4 mt-1 space-y-1">
             <SidebarLink to="/province">استان‌ها</SidebarLink>
-            <SidebarLink to="/city">شهرها</SidebarLink>
-            <SidebarLink to="/village">روستاها</SidebarLink>
           </div>
         )}
 
-        <SidebarLink to="/users">کاربران</SidebarLink>
+        <SidebarLink to="/farmer">کشاورزان</SidebarLink>
 
       </nav>
     </aside>
