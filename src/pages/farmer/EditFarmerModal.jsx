@@ -1,60 +1,48 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { createFarmer } from "../../api/farmer.api";
+import { updateFarmer } from "../../api/farmer.api";
 
-function AddFarmerModal({ isOpen, onClose, onSuccess }) {
-  if (!isOpen) return null;
+function EditFarmerModal({ isOpen, onClose, onSuccess, farmer }) {
+  if (!isOpen || !farmer) return null;
 
-  // Validation
+  // Validation (مثل Add)
   const validationSchema = Yup.object({
     full_name: Yup.string().required("نام و نام خانوادگی الزامی است"),
 
-    national_id: Yup.string()
-      .length(10, "کد ملی باید ۱۰ رقم باشد")
-      .required("کد ملی الزامی است"),
-
     phone_number: Yup.string()
-      .matches(/^09\d{9}$/, "شماره موبایل باید با 09 شروع شود و 11 رقم باشد")
+      .matches(/^09\d{9}$/, "شماره موبایل معتبر نیست")
       .nullable(),
 
     sheba_number_1: Yup.string()
-      .matches(/^IR\d{24}$/, "شماره شبا باید با IR شروع شده و 26 کاراکتر باشد")
-      .required("شماره شبا الزامی است"),
+        .matches(/^\d{24}$/, "شماره شبا باید ۲۴ رقم عدد باشد")
+        .required("شماره شبا الزامی است"),
 
-    father_name: Yup.string().nullable(),
-    address: Yup.string().nullable(),
   });
 
-  // Initial values
+  // Initial values (prefill)
   const initialValues = {
-    full_name: "",
-    national_id: "",
-    phone_number: "",
-    father_name: "",
-    address: "",
-    sheba_number_1: "",
+    full_name: farmer.full_name || "",
+    phone_number: farmer.phone_number || "",
+    father_name: farmer.father_name || "",
+    address: farmer.address || "",
+    sheba_number_1: farmer.sheba_number_1 || "",
   };
 
   // Submit
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const payload = Object.fromEntries(
-        Object.entries(values).filter(([_, value]) => value !== "")
+        Object.entries(values).filter(([_, v]) => v !== "")
       );
 
-      await createFarmer(payload);
+      await updateFarmer(farmer.national_id, payload);
 
-      alert("کشاورز با موفقیت ثبت شد.");
+      alert("ویرایش با موفقیت انجام شد.");
       onSuccess();
       onClose();
     } catch (error) {
       console.error(error);
-
-      if (error.response?.status === 422) {
-        alert("اطلاعات وارد شده معتبر نیست");
-      } else {
-        alert("خطا در ثبت کشاورز");
-      }
+      alert("خطا در ویرایش کشاورز");
     } finally {
       setSubmitting(false);
     }
@@ -62,23 +50,21 @@ function AddFarmerModal({ isOpen, onClose, onSuccess }) {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-      {/* Card */}
       <div className="bg-white w-full max-w-xl rounded-xl shadow-lg flex flex-col max-h-[85vh] overflow-hidden">
 
-        {/* Header (Sticky) */}
-        <div className="flex items-center justify-between px-6 py-4 border-b bg-white sticky top-0 z-10">
+        {/* Header */}
+        <div className="flex justify-between items-center px-6 py-4 border-b">
           <h2 className="text-lg font-bold">
-            ثبت کشاورز جدید
+            ویرایش اطلاعات کشاورز
           </h2>
           <button
             onClick={onClose}
-            className="text-slate-500 hover:text-slate-800 text-xl"
+            className="text-xl text-slate-500 hover:text-slate-800"
           >
             ✕
           </button>
         </div>
 
-        {/* Formik */}
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -86,9 +72,9 @@ function AddFarmerModal({ isOpen, onClose, onSuccess }) {
         >
           {({ isSubmitting }) => (
             <>
-              {/* Scrollable Body */}
+              {/* Body */}
               <div className="flex-1 overflow-auto px-6 py-4">
-                <Form id="farmerForm" className="space-y-4">
+                <Form id="editFarmerForm" className="space-y-4">
 
                   <div>
                     <label className="block text-sm mb-1">
@@ -100,21 +86,6 @@ function AddFarmerModal({ isOpen, onClose, onSuccess }) {
                     />
                     <ErrorMessage
                       name="full_name"
-                      component="div"
-                      className="text-red-600 text-sm"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm mb-1">
-                      کد ملی
-                    </label>
-                    <Field
-                      name="national_id"
-                      className="w-full border rounded-lg px-3 py-2"
-                    />
-                    <ErrorMessage
-                      name="national_id"
                       component="div"
                       className="text-red-600 text-sm"
                     />
@@ -152,7 +123,6 @@ function AddFarmerModal({ isOpen, onClose, onSuccess }) {
                     <Field
                       name="sheba_number_1"
                       className="w-full border rounded-lg px-3 py-2"
-                      placeholder="IRxxxxxxxxxxxxxxxxxxxxxx"
                     />
                     <ErrorMessage
                       name="sheba_number_1"
@@ -167,8 +137,8 @@ function AddFarmerModal({ isOpen, onClose, onSuccess }) {
                     </label>
                     <Field
                       as="textarea"
-                      name="address"
                       rows="3"
+                      name="address"
                       className="w-full border rounded-lg px-3 py-2"
                     />
                   </div>
@@ -176,8 +146,8 @@ function AddFarmerModal({ isOpen, onClose, onSuccess }) {
                 </Form>
               </div>
 
-              {/* Footer (Sticky) */}
-              <div className="flex justify-end gap-3 px-6 py-4 border-t bg-white sticky bottom-0">
+              {/* Footer */}
+              <div className="flex justify-end gap-3 px-6 py-4 border-t">
                 <button
                   type="button"
                   onClick={onClose}
@@ -188,11 +158,11 @@ function AddFarmerModal({ isOpen, onClose, onSuccess }) {
 
                 <button
                   type="submit"
-                  form="farmerForm"
+                  form="editFarmerForm"
                   disabled={isSubmitting}
-                  className="px-4 py-2 rounded-lg bg-emerald-600 text-white disabled:opacity-50"
+                  className="px-4 py-2 rounded-lg bg-blue-600 text-white disabled:opacity-50"
                 >
-                  {isSubmitting ? "در حال ثبت..." : "ثبت"}
+                  {isSubmitting ? "در حال ذخیره..." : "ذخیره تغییرات"}
                 </button>
               </div>
             </>
@@ -203,4 +173,4 @@ function AddFarmerModal({ isOpen, onClose, onSuccess }) {
   );
 }
 
-export default AddFarmerModal;
+export default EditFarmerModal;

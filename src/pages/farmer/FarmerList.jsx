@@ -4,6 +4,7 @@ import {
   deleteFarmer,
 } from "../../api/farmer.api";
 import AddFarmerModal from "./AddFarmerModal";
+import EditFarmerModal from "./EditFarmerModal";
 
 
 function FarmerList() {
@@ -15,6 +16,9 @@ function FarmerList() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [selectedFarmer, setSelectedFarmer] = useState(null);
+
   
   // گرفتن لیست کشاورزها
   const fetchFarmers = async () => {
@@ -140,7 +144,7 @@ function FarmerList() {
                   </td>
 
                   <td className="p-3 whitespace-nowrap">
-                    <div className="flex items-center gap-3 justify-center">
+                    <div className="flex items-center gap-3">
 
                       {/* Edit */}
                       <button
@@ -210,7 +214,16 @@ function FarmerList() {
           onClose={() => setIsAddOpen(false)}
           onSuccess={fetchFarmers}
         />
-    </div>
+
+    {editOpen && selectedFarmer && (
+    <EditFarmerModal
+      isOpen={editOpen}
+      farmer={selectedFarmer}
+      onClose={() => setEditOpen(false)}
+      onSuccess={fetchFarmers}
+    />
+    )}
+  </div>
 
   );
 }
