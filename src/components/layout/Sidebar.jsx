@@ -3,40 +3,40 @@ import { useState, useEffect } from "react";
 
 function Sidebar() {
   const location = useLocation();
-
   const [baseDataOpen, setBaseDataOpen] = useState(false);
 
-  // اگر روی یکی از زیرمنوها بودیم، منو باز بماند
   useEffect(() => {
     if (
       location.pathname.startsWith("/province") ||
-      location.pathname.startsWith("/city") ||
-      location.pathname.startsWith("/village")
+      location.pathname.startsWith("/farmer")
     ) {
       setBaseDataOpen(true);
     }
   }, [location.pathname]);
 
   return (
-    <aside className="
-      w-64 bg-white border-l min-h-screen
-      flex flex-col border-e-green-600
-    ">
+    <aside
+      className="
+        w-64 bg-white border-l
+        sticky top-0 h-screen
+        flex flex-col
+      "
+    >
       {/* Brand */}
-      <div className="
-        h-16 flex items-center justify-center
-        font-extrabold text-lg
-        border-b text-emerald-600
-      ">
+      <div
+        className="
+          h-16 flex items-center justify-center
+          font-extrabold text-lg
+          border-b text-emerald-600
+        "
+      >
         سامانه هاویر کشت
       </div>
 
       {/* Menu */}
-      <nav className="p-4 text-sm space-y-1">
-
+      <nav className="p-4 text-sm space-y-1 flex-1 overflow-y-auto">
         <SidebarLink to="/">داشبورد</SidebarLink>
 
-        {/* Base Data Menu */}
         <button
           onClick={() => setBaseDataOpen(!baseDataOpen)}
           className="
@@ -56,7 +56,6 @@ function Sidebar() {
           </span>
         </button>
 
-        {/* Submenu */}
         {baseDataOpen && (
           <div className="mr-4 mt-1 space-y-1">
             <SidebarLink to="/province">استان‌ها</SidebarLink>
@@ -64,7 +63,6 @@ function Sidebar() {
         )}
 
         <SidebarLink to="/farmer">کشاورزان</SidebarLink>
-
       </nav>
     </aside>
   );
@@ -76,8 +74,7 @@ function SidebarLink({ to, children }) {
       to={to}
       className={({ isActive }) =>
         `
-        block px-4 py-2 rounded-lg
-        transition
+        block px-4 py-2 rounded-lg transition
         ${
           isActive
             ? "bg-emerald-500 text-white"
