@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getProvinces, deleteProvince } from "../../api/province.api";
+import AddProvinceModal from "./AddProvinceModal";
 
 function ProvinceList() {
   const [provinces, setProvinces] = useState([]);
@@ -8,12 +9,12 @@ function ProvinceList() {
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
 
   const fetchProvinces = async () => {
     try {
       setLoading(true);
       const data = await getProvinces({ page, size, search });
-
       setProvinces(data.items);
       setTotal(data.total);
     } finally {
@@ -27,7 +28,6 @@ function ProvinceList() {
 
   const handleDelete = async (name) => {
     if (!confirm(`حذف استان «${name}»؟`)) return;
-
     await deleteProvince(name);
     fetchProvinces();
   };
@@ -36,13 +36,16 @@ function ProvinceList() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-slate-800">استان‌ها</h1>
 
-        <button className="bg-emerald-600 text-white px-4 py-2 rounded-xl">
-          ثبت استان جدید
-        </button>
+      <button
+        onClick={() => setAddOpen(true)}
+        className="bg-emerald-600 text-white px-4 py-2 rounded-xl"
+      >
+        ثبت استان جدید
+      </button>
+
       </div>
 
       {/* Search */}
@@ -84,15 +87,16 @@ function ProvinceList() {
               </tr>
             )}
 
+
             {provinces.map((item) => (
-              <tr key={item.id} className="border-t">
-                <td className="p-3">{item.name}</td>
+              <tr key={item.province} className="border-t">
+                <td className="p-3">{item.province}</td>
                 <td className="p-3">
-                  {new Date(item.created_at).toLocaleDateString("fa-IR")}
+                  {item.created_at}
                 </td>
                 <td className="p-3">
                   <button
-                    onClick={() => handleDelete(item.name)}
+                    onClick={() => handleDelete(item.province)}
                     className="text-red-600"
                   >
                     حذف
@@ -100,6 +104,7 @@ function ProvinceList() {
                 </td>
               </tr>
             ))}
+
           </tbody>
         </table>
       </div>
@@ -122,6 +127,16 @@ function ProvinceList() {
           ))}
         </div>
       )}
+
+    <AddProvinceModal
+      isOpen={addOpen}
+      onClose={() => setAddOpen(false)}
+      onSuccess={() => {
+        setPage(1);
+        fetchProvinces();
+      }}
+    />
+
     </div>
   );
 }
