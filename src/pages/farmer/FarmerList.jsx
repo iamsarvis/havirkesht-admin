@@ -139,23 +139,45 @@ function FarmerList() {
                     {item.created_at}
                   </td>
 
-                  <td className="p-3 whitespace-nowrap space-x-3 space-x-reverse">
-                    <button className="text-blue-600">
-                      ویرایش
-                    </button>
+                  <td className="p-3 whitespace-nowrap">
+                    <div className="flex items-center gap-3 justify-center">
 
-                    <button
-                      onClick={() =>
-                        handleDelete(
-                          item.national_id,
-                          item.full_name
-                        )
-                      }
-                      className="text-red-600"
-                    >
-                      حذف
-                    </button>
+                      {/* Edit */}
+                      <button
+                        onClick={() => {
+                          setSelectedFarmer(item);
+                          setEditOpen(true);
+                        }}
+                        className="
+                          flex items-center gap-1
+                          text-blue-600 hover:text-blue-800
+                          hover:bg-blue-50
+                          px-3 py-1.5 rounded-lg
+                          transition
+                        "
+                      >
+                        <span className="text-sm">ویرایش</span>
+                      </button>
+
+                      {/* Delete */}
+                      <button
+                        onClick={() =>
+                          handleDelete(item.national_id, item.full_name)
+                        }
+                        className="
+                          flex items-center gap-1
+                          text-red-600 hover:text-red-800
+                          hover:bg-red-50
+                          px-3 py-1.5 rounded-lg
+                          transition
+                        "
+                      >
+                        <span className="text-sm">حذف</span>
+                      </button>
+
+                    </div>
                   </td>
+
                 </tr>
               ))}
             </tbody>
